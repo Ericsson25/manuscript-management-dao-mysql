@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+  'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='manuscript.module.manuscript.management.mapper.ManuscriptDaoMapper'>
+
+	<insert id="insertSubmission">
+	INSERT INTO 
+		SBM_SUBMISSION
+		(
+			SUBMISSION_ID,
+			SUBMITTER,
+			STATUS
+		)
+		VALUES
+		(
+			#{saveRequest.submissionId},
+			#{saveRequest.authorId},
+			(
+				SELECT
+					ID
+				FROM
+					SBM_STATUS
+				WHERE
+					STATUS = #{saveRequest.submissionStatus}
+			)
+		)
+	</insert>
+	
+	<insert id="insertSubmissionDoc">
+	INSERT INTO
+		SBM_SUBMISSION_DOCS
+		(
+			URL,
+			VERSION,
+			SUBMISSION_ID
+		)
+		VALUES
+		(
+			#{saveRequest.filePath},
+			#{saveRequest.version},
+			#{saveRequest.submissionId}
+		)
+	</insert>
+	
+	<insert id="insertSubmissionAuthor">
+	INSERT INTO 
+		SBM_AUTHORS 
+		(
+			AUTHOR_ID,
+			SUBMISSION_ID
+		) 
+		VALUES 
+		(
+			#{userId},
+			#{submissionId}
+		)
+	</insert>
+
+	<select id="getSubmissionBySubmissionId" resultType="manuscript.module.manuscript.management.bean.Submission">
+		SELECT 
+			SUBMISSION_ID as submissionId,
+			TITLE as title,
+			CREATION_DATE as creationDate,
+			LAST_MODIFY_DATE as lastModifyDate,
+			ABSTRACT as manuscriptAbstract,
+			KEYWORDS as keywords,
+			SUBMITTER as submitter,
+			sbmstatus.STATUS as status
+		FROM 
+			SBM_SUBMISSION submission
+		INNER JOIN 
+			SBM_STATUS sbmstatus
+		ON
+			submission.STATUS = sbmstatus.ID
+		WHERE
+			SUBMISSION_ID = #{submissionId}
+	</select>
+	
+	<select id="getSubmissionDisciplinesList" resultType="manuscript.module.user.management.bean.AcademicDisciplines">
+		SELECT 
+			ACADEMIC_DISCIPLINES_ID as academicDisciplinesId, 
+			ACADEMIC_DISCIPLINES_NAME as academicDisciplinesName 
+		FROM 
+			ACADEMIC_DISCIPLINES 
+		WHERE 
+			ACADEMIC_DISCIPLINES_ID 
+		IN 
+		(
+		SELECT 
+			ACADEMIC_DISCIPLINES_ID 
+		FROM 
+			SBM_ACADEMIC_DISCIPLINES 
+		WHERE 
+			SUBMISSION_ID = #{submissionId}
+		)
+	</select>
+	
+	<select id="getSubmissionAuthorList" resultType="manuscript.module.manuscript.management.bean.Author">
+		SELECT 
+			USER_ID as userId, 
+			EMAIL as email, 
+			FIRST_NAME as firstName, 
+			LAST_NAME as lastName
+		FROM 
+			SBM_AUTHORS author 
+		INNER JOIN 
+			USR_USER user 
+		ON 
+			author.AUTHOR_ID = user.USER_ID 
+		WHERE 
+			SUBMISSION_ID = #{submissionId}
+	</select>
+	
+</mapper>
