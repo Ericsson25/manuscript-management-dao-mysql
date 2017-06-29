@@ -111,4 +111,61 @@
 			SUBMISSION_ID = #{submissionId}
 	</select>
 	
+	<select id="checkSubmissionExistence" resultType="string">
+		SELECT 
+			submissiondoc.URL 
+		FROM 
+			SBM_SUBMISSION submission 
+		INNER JOIN 
+			SBM_SUBMISSION_DOCS submissiondoc 
+		ON 
+			submission.SUBMISSION_ID = submissiondoc.SUBMISSION_ID 
+		WHERE 
+		(
+			submission.SUBMISSION_ID = #{checkSubmissionExistence.submissionId}
+		AND 
+			submission.SUBMITTER = #{checkSubmissionExistence.submitterId}
+		) 
+		ORDER BY VERSION LIMIT 1;
+	</select>
+	
+	<update id="updateSubmissionData">
+		UPDATE 
+			SBM_SUBMISSION
+		SET
+			TITLE = #{submission.title},
+			LAST_MODIFY_DATE = CURRENT_TIMESTAMP,
+			ABSTRACT = #{submission.manuscriptAbstract},
+			KEYWORDS = #{submission.keywords}
+		WHERE
+			SUBMISSION_ID = #{submission.submissionId}
+	</update>
+	
+	<delete id="removeSubmissionAuthorsBySubmissionId">
+		DELETE FROM
+			SBM_AUTHORS
+		WHERE
+			SUBMISSION_ID = #{submissionId}
+	</delete>
+	
+	<delete id="removeSubmissionDisciplinesBySubmissionId">
+		DELETE FROM 
+			SBM_ACADEMIC_DISCIPLINES 
+		WHERE 
+			SUBMISSION_ID = #{submissionId}
+	</delete>
+	
+	<insert id="insertSubmissionDisciplines">
+		INSERT INTO 
+			SBM_ACADEMIC_DISCIPLINES 
+			(
+				ACADEMIC_DISCIPLINES_ID,
+				SUBMISSION_ID
+			) 
+		VALUES 
+			(
+				#{academicDisciplines.academicDisciplinesId},
+				#{submissionId}
+			)
+	</insert>
 </mapper>

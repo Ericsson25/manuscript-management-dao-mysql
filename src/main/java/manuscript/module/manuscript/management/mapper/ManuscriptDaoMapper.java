@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import manuscript.module.manuscript.management.bean.Author;
+import manuscript.module.manuscript.management.bean.CheckSubmissionExistence;
 import manuscript.module.manuscript.management.bean.Submission;
 import manuscript.module.manuscript.management.request.SaveSubmissionRequest;
 import manuscript.module.user.management.bean.AcademicDisciplines;
@@ -23,7 +24,15 @@ public interface ManuscriptDaoMapper {
 
 	public List<AcademicDisciplines> getSubmissionDisciplinesList(@Param("submissionId") String submissionId);
 
-	public void getSubmissions();
+	public String checkSubmissionExistence(@Param("checkSubmissionExistence") CheckSubmissionExistence checkSubmissionExistence);
 
-	public void getSubmissionsByUserId();
+	public void updateSubmissionData(@Param("submission") Submission submission);
+
+	public void removeSubmissionAuthorsBySubmissionId(@Param("submissionId") String submissionId);
+
+	public void removeSubmissionDisciplinesBySubmissionId(@Param("submissionId") String submissionId);
+
+	public void insertSubmissionDisciplines(@Param("academicDisciplines") AcademicDisciplines academicDisciplines,
+			@Param("submissionId") String submissionId);
+
 }
