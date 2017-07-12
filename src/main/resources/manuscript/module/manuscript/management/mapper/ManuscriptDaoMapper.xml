@@ -168,4 +168,27 @@
 				#{submissionId}
 			)
 	</insert>
+	
+	<select id="getSubmissionDocPath" resultType="string">
+		SELECT 
+			URL 
+		FROM 
+			SBM_SUBMISSION_DOCS 
+		WHERE 
+			SUBMISSION_ID = #{submissionId}
+	</select>
+	
+	<delete id="removeSubmissionDocBySubmissionId">
+		DELETE FROM 
+			SBM_SUBMISSION_DOCS 
+		WHERE 
+			SUBMISSION_ID = #{submissionId}
+	</delete>
+	
+	<delete id="removeSubmissionBySubmissionId">
+		DELETE FROM 
+			SBM_SUBMISSION 
+		WHERE 
+			SUBMISSION_ID = #{submissionId}
+	</delete>
 </mapper>

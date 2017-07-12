@@ -35,4 +35,10 @@ public interface ManuscriptDaoMapper {
 	public void insertSubmissionDisciplines(@Param("academicDisciplines") AcademicDisciplines academicDisciplines,
 			@Param("submissionId") String submissionId);
 
+	public String getSubmissionDocPath(@Param("submissionId") String submissionId);
+
+	public void removeSubmissionDocBySubmissionId(@Param("submissionId") String submissionId);
+
+	public void removeSubmissionBySubmissionId(@Param("submissionId") String submissionId);
+
 }

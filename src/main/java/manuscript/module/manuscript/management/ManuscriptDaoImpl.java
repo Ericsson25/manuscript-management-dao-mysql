@@ -9,6 +9,7 @@ import manuscript.module.manuscript.management.bean.CheckSubmissionExistence;
 import manuscript.module.manuscript.management.bean.Submission;
 import manuscript.module.manuscript.management.exception.CheckSubmissionExistenceException;
 import manuscript.module.manuscript.management.mapper.ManuscriptDaoMapper;
+import manuscript.module.manuscript.management.request.RemoveSubmissionRequest;
 import manuscript.module.manuscript.management.request.SaveSubmissionDataRequest;
 import manuscript.module.manuscript.management.request.SaveSubmissionRequest;
 import manuscript.module.manuscript.management.response.GetSubmissionDataResponse;
@@ -67,6 +68,18 @@ public class ManuscriptDaoImpl implements ManuscriptDao {
 			manuscriptDaoMapper.insertSubmissionDisciplines(academicDisciplines, submission.getSubmission().getSubmissionId());
 		}
 
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+	public String removeSubmissionData(RemoveSubmissionRequest request) {
+		manuscriptDaoMapper.removeSubmissionDisciplinesBySubmissionId(request.getSubmissionId());
+		manuscriptDaoMapper.removeSubmissionAuthorsBySubmissionId(request.getSubmissionId());
+
+		String filePath = manuscriptDaoMapper.getSubmissionDocPath(request.getSubmissionId());
+		manuscriptDaoMapper.removeSubmissionDocBySubmissionId(request.getSubmissionId());
+		manuscriptDaoMapper.removeSubmissionBySubmissionId(request.getSubmissionId());
+		return filePath;
 	}
 
 }
